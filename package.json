@@ -1,9 +1,9 @@
 {
-  "name": "sample-extension-04251226",
-  "displayName": "sample displayName",
-  "description": "sample description",
-  "version": "0.0.1",
-  "publisher": "VS-Modules",
+  "name": "flow-master",
+  "displayName": "Flow Master",
+  "description": "Visualize, save, and share code execution flows within your project.",
+  "version": "0.1.0",
+  "publisher": "YourPublisherName",
   "repository": {
     "type": "git",
     "url": "https://github.com/2201009-kikukawa/Sample-extension"
@@ -13,41 +13,159 @@
   },
   "main": "./out/extension.js",
   "activationEvents": [
-    "onCommand:flow-master.generateFlowForSelection"
+    "onView:flowMaster.flowListSidebar",
+    "onCommand:flowMaster.setFlowStartPin",
+    "onCommand:flowMaster.setFlowEndPin",
+    "onCommand:flowMaster.saveFlow",
+    "onCommand:flowMaster.viewFlow",
+    "onCommand:flowMaster.traceFlow",
+    "onCommand:flowMaster.exportFlowSVG",
+    "onCommand:flowMaster.exportFlowPNG",
+    "onCommand:flowMaster.exportFlowMarkdown",
+    "onCommand:flowMaster.refreshFlowList"
   ],
   "contributes": {
-    "views": {
-      "sample-id": [
+    "commands": [
+      {
+        "command": "flowMaster.setFlowStartPin",
+        "title": "Flow Master: Set Flow Start Pin",
+        "category": "Flow Master"
+      },
+      {
+        "command": "flowMaster.setFlowEndPin",
+        "title": "Flow Master: Set Flow End Pin",
+        "category": "Flow Master"
+      },
+      {
+        "command": "flowMaster.saveFlow",
+        "title": "Flow Master: Save Captured Flow",
+        "category": "Flow Master"
+      },
+      {
+        "command": "flowMaster.viewFlow",
+        "title": "Flow Master: View Flow",
+        "category": "Flow Master"
+      },
+      {
+        "command": "flowMaster.traceFlow",
+        "title": "Flow Master: Trace Flow in Editor",
+        "category": "Flow Master"
+      },
+      {
+        "command": "flowMaster.exportFlowSVG",
+        "title": "Flow Master: Export Flow as SVG",
+        "category": "Flow Master"
+      },
+      {
+        "command": "flowMaster.exportFlowPNG",
+        "title": "Flow Master: Export Flow as PNG",
+        "category": "Flow Master"
+      },
+      {
+        "command": "flowMaster.exportFlowMarkdown",
+        "title": "Flow Master: Export Flow as Markdown",
+        "category": "Flow Master"
+      },
+      {
+        "command": "flowMaster.refreshFlowList",
+        "title": "Refresh Flow List",
+        "icon": "$(refresh)",
+        "category": "Flow Master"
+      }
+    ],
+    "menus": {
+      "editor/context": [
         {
-          "type": "webview",
-          "id": "sample-id",
-          "name": "Flow Master"
+          "when": "editorHasSelection",
+          "command": "flowMaster.setFlowStartPin",
+          "group": "navigation@1"
+        },
+        {
+          "when": "editorHasSelection",
+          "command": "flowMaster.setFlowEndPin",
+          "group": "navigation@2"
+        },
+        {
+          "command": "flowMaster.saveFlow",
+          "group": "navigation@3",
+          "when": "flowMaster.canSaveFlow"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "flowMaster.refreshFlowList",
+          "when": "view == flowMaster.flowListSidebar",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "flowMaster.viewFlow",
+          "when": "view == flowMaster.flowListSidebar && viewItem == flow",
+          "group": "inline"
+        },
+        {
+          "command": "flowMaster.traceFlow",
+          "when": "view == flowMaster.flowListSidebar && viewItem == flow",
+          "group": "inline"
+        },
+        {
+          "command": "flowMaster.exportFlowSVG",
+          "when": "view == flowMaster.flowListSidebar && viewItem == flow",
+          "group": "export@1"
+        },
+        {
+          "command": "flowMaster.exportFlowPNG",
+          "when": "view == flowMaster.flowListSidebar && viewItem == flow",
+          "group": "export@2"
+        },
+        {
+          "command": "flowMaster.exportFlowMarkdown",
+          "when": "view == flowMaster.flowListSidebar && viewItem == flow",
+          "group": "export@3"
         }
       ]
     },
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "sample-id",
+          "id": "flow-master-activitybar",
           "title": "Flow Master",
           "icon": "./resources/webview_icon.svg"
         }
       ]
     },
-    "commands": [
-      {
-        "command": "flow-master.generateFlowForSelection",
-        "title": "Flow Master: Generate Flow for Selection",
-        "category": "Flow Master"
+    "views": {
+      "flow-master-activitybar": [
+        {
+          "type": "webview",
+          "id": "flowMaster.graphView",
+          "name": "Flow Graph"
+        },
+        {
+          "id": "flowMaster.flowListSidebar",
+          "name": "Shared Flows",
+          "type": "tree"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Flow Master",
+      "properties": {
+        "flowMaster.sharedFlowsFile": {
+          "type": "string",
+          "default": ".flowmaster/flows.json",
+          "description": "Path to the shared JSON file for storing flows, relative to the workspace root."
+        }
       }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "node ./esbuild.js",
     "package": "vsce package",
     "watch": "node ./esbuild.js --watch",
-    "lint": "eslint src --ext ts"
+    "lint": "eslint src --ext ts,tsx"
   },
   "devDependencies": {
     "@types/glob": "^8.0.0",
@@ -61,13 +179,17 @@
     "eslint": "^8.26.0",
     "glob": "^8.0.3",
     "prettier": "^2.8.1",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "@types/uuid": "^9.0.0",
+    "ts-morph": "^22.0.0"
   },
   "dependencies": {
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vscode/webview-ui-toolkit": "^1.2.2",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "uuid": "^9.0.0",
+    "mermaid": "^10.0.0"
   }
 }
