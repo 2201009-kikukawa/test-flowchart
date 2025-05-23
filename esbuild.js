@@ -40,6 +40,13 @@ const webviewConfig = {
         to: ["./out"],
       },
     }),
+    copy({
+      resolveFrom: "cwd",
+      assets: {
+        from: ["./node_modules/mermaid/dist/mermaid.min.js"],
+        to: ["./out"],
+      },
+    }),
   ],
 };
 

@@ -13,7 +13,7 @@
   },
   "main": "./out/extension.js",
   "activationEvents": [
-    "*"
+    "onCommand:flow-master.generateFlowForSelection"
   ],
   "contributes": {
     "views": {
@@ -21,7 +21,7 @@
         {
           "type": "webview",
           "id": "sample-id",
-          "name": "sample-name"
+          "name": "Flow Master"
         }
       ]
     },
@@ -29,11 +29,18 @@
       "activitybar": [
         {
           "id": "sample-id",
-          "title": "sample-title",
+          "title": "Flow Master",
           "icon": "./resources/webview_icon.svg"
         }
       ]
-    }
+    },
+    "commands": [
+      {
+        "command": "flow-master.generateFlowForSelection",
+        "title": "Flow Master: Generate Flow for Selection",
+        "category": "Flow Master"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
