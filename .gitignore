@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# VS Code Extension Development
+out/
+.vscode-test/
+*.vsix

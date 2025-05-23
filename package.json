@@ -1,0 +1,66 @@
+{
+  "name": "sample-extension-04251226",
+  "displayName": "sample displayName",
+  "description": "sample description",
+  "version": "0.0.1",
+  "publisher": "VS-Modules",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2201009-kikukawa/Sample-extension"
+  },
+  "engines": {
+    "vscode": "^1.93.1"
+  },
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "*"
+  ],
+  "contributes": {
+    "views": {
+      "sample-id": [
+        {
+          "type": "webview",
+          "id": "sample-id",
+          "name": "sample-name"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "sample-id",
+          "title": "sample-title",
+          "icon": "./resources/webview_icon.svg"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "node ./esbuild.js",
+    "package": "vsce package",
+    "watch": "node ./esbuild.js --watch",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.0.0",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.93.1",
+    "@types/vscode-webview": "^1.57.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "esbuild": "^0.16.10",
+    "esbuild-plugin-copy": "^2.0.1",
+    "eslint": "^8.26.0",
+    "glob": "^8.0.3",
+    "prettier": "^2.8.1",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vscode/webview-ui-toolkit": "^1.2.2",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  }
+}
