@@ -162,7 +162,6 @@ export class FlowCaptureService {
     }
 
     if (nodes.length === 0 && this.startPin) {
-      // If parsing failed to find specific calls but we have a pin, create at least an entry node
       const entryNodeId = uuidv4();
       nodes.push({
         id: entryNodeId,

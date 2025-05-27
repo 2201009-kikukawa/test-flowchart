@@ -2,8 +2,6 @@ import * as vscode from "vscode";
 import { FlowStorageService } from "./flowStorageService";
 import { GraphViewProvider } from "../providers/GraphViewProvider";
 import { Logger } from "../utilities/logger";
-import * as fs from "fs";
-import * as path from "path";
 
 async function getFlowIdForExport(
   flowStorageService: FlowStorageService,

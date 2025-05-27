@@ -26,7 +26,7 @@ async function highlightNode(node: FlowNode, editor: vscode.TextEditor, step: nu
     );
 
     const decorationType = vscode.window.createTextEditorDecorationType({
-      backgroundColor: `rgba(0, 255, 0, ${0.5 - step * 0.05})`, // Fades out slightly with more steps
+      backgroundColor: `rgba(0, 255, 0, ${0.5 - step * 0.05})`,
       isWholeLine: false,
       border: "1px solid green",
       overviewRulerColor: "green",
@@ -106,11 +106,9 @@ export const traceFlowHandler = async (
     `Starting trace for flow: ${flow.name}. Highlighting steps...`
   );
 
-  // Simple sequential trace for now. A real tracer would follow edges and logic.
   let step = 0;
-  const sortedNodes = flow.nodes; // This should ideally be a topological sort or follow a main path from edges
+  const sortedNodes = flow.nodes;
 
-  // Find the active editor or open the first relevant file
   let currentEditor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
   if (
     sortedNodes[0]?.codeReference &&
@@ -141,7 +139,6 @@ export const traceFlowHandler = async (
 
     const node = sortedNodes[step];
     if (node.codeReference && currentEditor?.document.uri.fsPath !== node.codeReference.filePath) {
-      // Switch editor if node is in a different file
       try {
         const doc = await vscode.workspace.openTextDocument(
           vscode.Uri.file(node.codeReference.filePath)
@@ -152,7 +149,7 @@ export const traceFlowHandler = async (
         });
       } catch (e) {
         Logger.error("Could not switch document for tracing node:", e);
-        step++; // Skip this node if file cannot be opened
+        step++;
         return;
       }
     }
@@ -161,7 +158,7 @@ export const traceFlowHandler = async (
       await highlightNode(node, currentEditor, step);
     }
     step++;
-  }, 1500); // Highlight every 1.5 seconds
+  }, 1500);
 
-  context.subscriptions.push({ dispose: clearDecorations }); // Ensure decorations are cleared on deactivate
+  context.subscriptions.push({ dispose: clearDecorations });
 };
